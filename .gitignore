@@ -1,1 +1,4 @@
 *.db
+*.pdb
+*.ipdb
+*.iobj
