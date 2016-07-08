@@ -31,14 +31,15 @@ void updateMap(int nrtimes)
 	}
 }
 
-void printMap()
+void printMap(int totalnrtries)
 {
-	printf("\n");
-	printf("Nr allocs needed   |  Nr times\n");
-	printf("-------------------------------\n");
+	printf("\n\n\nSummary:\n");
+	printf("Total number of allocations performed to take freed chunk back: %d\n", totalnrtries);
+	printf("Nr allocs needed   |  Nr of times\n");
+	printf("----------------------------------\n");
 	for (std::map<int, int>::iterator it = mapAllocData.begin(); it != mapAllocData.end(); ++it)
 	{
-		printf("       %d               %d \n", it->first, it->second);
+		printf("     %*d       %*d \n", 8, it->first, 8, it->second);
 	}
 	printf("\n");
 }
@@ -58,9 +59,12 @@ int main()
 	double mintimes;
 	double maxtimes;
 	int nrtries;
+	int totalnrtries;
 	int nrnotfound;
 	int maxruns;
 	bool wasfound;
+
+	totalnrtries = 0;
 
 	takenbacksum = 0;
 	nrruns = 0;
@@ -70,7 +74,7 @@ int main()
 
 	hDefaultHeap = GetProcessHeap();
 
-	maxruns = 100;
+	maxruns = 250;
 
 	for (int nrtimes = 0; nrtimes < maxruns; nrtimes++)
 	{
@@ -109,6 +113,7 @@ int main()
 					takenbacksum = takenbacksum + z;
 					nrruns = nrruns + 1;
 					nrtries = z;
+					totalnrtries += z;
 					if (mintimes == 0)
 					{
 						mintimes = z;
@@ -147,12 +152,12 @@ int main()
 			}
 			*/
 		}
-		printf("\n  Number of times object not taken back: %d\n", nrnotfound);
-		printf("  GlobalAverage so far: %f\n", (takenbacksum / nrruns));
+		printf("\n  Number of times freed LFH chunk not taken back: %d\n", nrnotfound);
+		printf("  Global Average so far: %f\n", (takenbacksum / nrruns));
 		printf("  Min: %f, max: %f\n", mintimes, maxtimes);
 	}
 
-	printMap();
+	printMap(totalnrtries);
 
 	return 0;
 
