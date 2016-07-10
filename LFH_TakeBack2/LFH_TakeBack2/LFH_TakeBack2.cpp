@@ -13,6 +13,14 @@
 
 using namespace std;
 
+void print_content(HANDLE memaddress)
+{
+	int* pcontent = (int*)memaddress;
+	int content = *pcontent;
+	printf(">> Contents at 0x%p: %08x\n", memaddress, content);
+}
+
+
 
 int main()
 {
@@ -54,6 +62,7 @@ int main()
 	hvulnChunk = HeapAlloc(hDefaultHeap, 0, vulnchunksize);
 	memset(hvulnChunk, 'A', vulnchunksize);
 	printf("Vulnerable object of 0x%08x bytes at 0x%p, filled with 'A'\n", vulnchunksize, hvulnChunk);
+	print_content(hvulnChunk);
 
 	// more allocations
 	for (int i = 0; i < 0x1000; i++)
@@ -96,6 +105,11 @@ int main()
 	}
 
 	printf("Allocations done.   Check if 0x%p contains 'B' now\n", hvulnChunk);
+	print_content(hvulnChunk);
+
+	
+
+	printf("\n");
 	cin.ignore();
 
 
